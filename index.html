@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Storytelling Framework</title>
+<script>document.documentElement.className += " js";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --burgundy:#9D2235;
+    --teal:#53898D;
+    --teal-dk:#2A4547;
+    --gold:#E6C559;
+    --gold-dk:#73632D;
+    --sienna:#DF6F4E;
+    --cerulean:#8FC2E1;
+    --violet:#492359;
+    --gray:#CCCCCC;
+    --ink:#20302F;
+    --ink-soft:#4c5b5a;
+    --paper:#FBF7EF;
+    --card:#ffffff;
+    --line:#e4dccb;
+  }
+  *{box-sizing:border-box;
+}  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:radial-gradient(var(--line) 1px, transparent 1px);
+    background-size:26px 26px;
+    color:var(--ink);
+    font-family:"Hanken Grotesk",sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px 90px;}
+
+  /* ---------- HEADER ---------- */
+  header{padding:74px 0 30px;}
+  .kicker{
+    font-family:"Spline Sans Mono",monospace;
+    font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--burgundy);font-weight:600;margin:0 0 18px;
+  }
+  h1{
+    font-family:"Fraunces",serif;
+    font-weight:900;font-size:clamp(40px,8vw,82px);
+    line-height:.98;letter-spacing:-.02em;margin:0 0 22px;
+    color:var(--ink);
+  }
+  h1 em{font-style:italic;color:var(--burgundy);}
+  .lede{
+    font-size:clamp(17px,2.4vw,21px);max-width:680px;color:var(--ink-soft);
+    margin:0 0 6px;font-weight:400;
+  }
+  .lede b{color:var(--ink);font-weight:600;}
+
+  /* ---------- LEGEND ---------- */
+  .legend{
+    margin:38px 0 10px;border:1.5px solid var(--ink);border-radius:14px;
+    background:var(--card);padding:22px 24px;
+    box-shadow:6px 6px 0 var(--teal-dk);
+  }
+  .legend h2{
+    font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;margin:0 0 16px;color:var(--ink-soft);font-weight:600;
+  }
+  .legend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .leg{display:flex;gap:12px;align-items:flex-start;}
+  .leg .mk{flex:0 0 auto;margin-top:3px;}
+  .leg .t{font-weight:700;font-size:15px;}
+  .leg .d{font-size:13.5px;color:var(--ink-soft);line-height:1.4;}
+  .mk svg{display:block;}
+
+  /* decision marker colors */
+  .c-go{color:var(--teal);}
+  .c-pivot{color:var(--sienna);}
+  .c-down{color:var(--burgundy);}
+
+  /* ---------- FLOW SPINE ---------- */
+  .flow{margin-top:14px;}
+  .stage{
+    display:grid;grid-template-columns:84px 1fr;gap:0;
+    position:relative;
+  }
+  .rail{position:relative;}
+  .rail::before{
+    content:"";position:absolute;left:33px;top:0;bottom:0;width:3px;
+    background:var(--line);
+  }
+  .stage:last-child .rail::before{bottom:auto;height:46px;}
+  .node{
+    position:relative;z-index:2;width:66px;height:66px;border-radius:50%;
+    background:var(--card);border:3px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Fraunces",serif;font-weight:900;font-size:30px;
+    margin-top:34px;
+  }
+  .body{padding:34px 0 14px 24px;min-width:0;}
+
+  .card{
+    background:var(--card);border:1.5px solid var(--ink);border-radius:16px;
+    padding:28px 30px 30px;position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:8px;
+  }
+  .s1 .node{border-color:var(--violet);color:var(--violet);}
+  .s1 .card::before{background:var(--violet);}
+  .s2 .node{border-color:var(--teal);color:var(--teal);}
+  .s2 .card::before{background:var(--teal);}
+  .s3 .node{border-color:var(--burgundy);color:var(--burgundy);}
+  .s3 .card::before{background:var(--burgundy);}
+  .s4 .node{border-color:var(--sienna);color:var(--sienna);}
+  .s4 .card::before{background:var(--sienna);}
+  .s5 .node{border-color:var(--gold-dk);color:var(--gold-dk);}
+  .s5 .card::before{background:var(--gold);}
+
+  .stage-label{
+    font-family:"Spline Sans Mono",monospace;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin:0 0 6px;
+  }
+  .stage-title{
+    font-family:"Fraunces",serif;font-weight:600;font-size:clamp(26px,4vw,38px);
+    line-height:1.02;letter-spacing:-.01em;margin:0 0 14px;
+  }
+  .check-q{
+    font-size:clamp(16px,2.2vw,19px);font-weight:600;color:var(--ink);
+    border-left:0;margin:0 0 4px;
+  }
+  .check-q::before{content:"\201C";color:var(--burgundy);font-family:"Fraunces",serif;font-weight:900;}
+  .check-q::after{content:"\201D";color:var(--burgundy);font-family:"Fraunces",serif;font-weight:900;}
+  .intro{font-size:15.5px;color:var(--ink-soft);margin:10px 0 22px;max-width:62ch;}
+
+  h3.block{
+    font-family:"Spline Sans Mono",monospace;font-size:11.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink);font-weight:600;
+    margin:26px 0 12px;padding-bottom:7px;border-bottom:1.5px solid var(--line);
+  }
+
+  /* checks */
+  .checks{display:grid;grid-template-columns:1fr;gap:10px;margin:6px 0 4px;}
+  .check{
+    display:grid;grid-template-columns:30px 92px 1fr;gap:12px;align-items:start;
+    padding:11px 14px;border-radius:10px;background:var(--paper);
+    border:1px solid var(--line);
+  }
+  .check .mk{margin-top:2px;}
+  .check .verb{
+    font-family:"Spline Sans Mono",monospace;font-weight:600;font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;padding-top:2px;
+  }
+  .check .txt{font-size:14px;color:var(--ink-soft);line-height:1.45;}
+  .check .txt b{color:var(--ink);font-weight:600;}
+
+  /* tool / resource lists */
+  ul.clean{list-style:none;margin:0;padding:0;display:grid;gap:9px;}
+  ul.clean li{font-size:14.5px;color:var(--ink-soft);line-height:1.46;padding-left:18px;position:relative;}
+  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:2px;background:var(--teal);}
+  ul.clean li b{color:var(--ink);font-weight:600;}
+  .mono{font-family:"Spline Sans Mono",monospace;font-size:13px;color:var(--burgundy);}
+
+  /* tool/use grid */
+  .tooluse{display:grid;gap:10px;}
+  .tu{display:grid;grid-template-columns:128px 1fr;gap:14px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--paper);}
+  .tu .nm{font-family:"Spline Sans Mono",monospace;font-weight:600;font-size:13px;color:var(--ink);}
+  .tu .us{font-size:13.5px;color:var(--ink-soft);line-height:1.42;}
+  .shorthand{margin-top:12px;font-size:13.5px;color:var(--ink);background:#fdf6e3;border:1px dashed var(--gold-dk);border-radius:9px;padding:11px 14px;}
+  .shorthand b{color:var(--gold-dk);}
+
+  /* example + template callouts */
+  .callout{
+    margin-top:14px;border-radius:11px;padding:15px 17px;font-size:14px;line-height:1.5;
+  }
+  .ex{background:#f1f5f4;border:1px solid #cfdedb;}
+  .ex .tag,.tp .tag{
+    display:inline-block;font-family:"Spline Sans Mono",monospace;font-size:10.5px;
+    letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:7px;
+  }
+  .ex .tag{color:var(--teal-dk);}
+  .ex b{color:var(--ink);font-weight:600;}
+  .tp{background:#f7eef0;border:1px solid #e4c9cf;}
+  .tp .tag{color:var(--burgundy);}
+  .tp b{color:var(--ink);font-weight:600;}
+  .tp .file{font-family:"Spline Sans Mono",monospace;font-size:12.5px;color:var(--burgundy);font-weight:600;}
+
+  /* method log table */
+  .logtable{width:100%;border-collapse:collapse;margin-top:6px;font-size:13px;}
+  .logtable th{
+    font-family:"Spline Sans Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+    text-transform:uppercase;text-align:left;padding:8px 10px;background:var(--teal-dk);color:#fff;font-weight:600;
+  }
+  .logtable td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top;}
+  .logtable tr:nth-child(even) td{background:var(--paper);}
+  .logtable .eg{color:var(--ink);font-style:italic;}
+
+  /* checklist for methodology */
+  ol.checks{list-style:none;counter-reset:c;margin:0;padding:0;display:grid;gap:11px;}
+  ol.checks li{counter-increment:c;position:relative;padding-left:38px;font-size:14.5px;color:var(--ink-soft);line-height:1.46;}
+  ol.checks li::before{
+    content:counter(c);position:absolute;left:0;top:1px;width:25px;height:25px;border-radius:50%;
+    background:var(--burgundy);color:#fff;font-family:"Spline Sans Mono",monospace;font-weight:600;
+    font-size:12px;display:flex;align-items:center;justify-content:center;
+  }
+  ol.checks li b{color:var(--ink);font-weight:600;}
+
+  /* ---------- LOOP FOOTER ---------- */
+  .loop{
+    margin-top:40px;border:1.5px solid var(--ink);border-radius:16px;
+    background:var(--ink);color:var(--paper);padding:34px 34px 30px;
+    box-shadow:6px 6px 0 var(--burgundy);
+  }
+  .loop h2{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(24px,4vw,34px);margin:0 0 14px;line-height:1.05;}
+  .loop p{font-size:15.5px;color:#d8e0df;max-width:70ch;margin:0 0 12px;}
+  .loop p b{color:#fff;}
+  .loop .hot{color:var(--gold);font-weight:600;}
+  .credit{margin-top:22px;font-family:"Spline Sans Mono",monospace;font-size:11.5px;color:#8aa09e;letter-spacing:.04em;line-height:1.6;}
+  .credit a{color:var(--cerulean);}
+
+  /* reveal */
+  .html .reveal{opacity:1;}
+  html.js .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;}
+  html.js .reveal.in{opacity:1;transform:none;}
+
+  @media(max-width:720px){
+    .legend-grid{grid-template-columns:1fr;gap:14px;}
+    .stage{grid-template-columns:54px 1fr;}
+    .rail::before{left:21px;}
+    .node{width:44px;height:44px;font-size:21px;margin-top:30px;}
+    .body{padding:30px 0 8px 14px;}
+    .card{padding:22px 18px 24px;}
+    .check{grid-template-columns:24px 1fr;}
+    .check .verb{grid-column:2;padding-top:0;}
+    .check .txt{grid-column:2;}
+    .check .mk{grid-row:1;}
+    .tu{grid-template-columns:1fr;gap:4px;}
+    .logtable{font-size:12px;}
+    .logtable th,.logtable td{padding:6px 7px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="kicker reveal">Data &amp; Digital Services / MARC</p>
+    <h1 class="reveal">From a question<br>to a <em>published</em> story</h1>
+    <p class="lede reveal">A working map of how a data story actually gets made here, from the first question to the post that ships. <b>It is a loop, not a line.</b> At every stage there are three honest moves: keep going, change direction, or set it down.</p> Inspired by https://pudding.cool/process/pivot-continue-down/
+  </header>
+
+  <section class="legend reveal">
+    <h2>Three checks to data story logic</h2>
+    <div class="legend-grid">
+      <div class="leg">
+        <span class="mk c-go"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M5 3 L16 10 L5 17 Z" fill="currentColor"/></svg></span>
+        <div><div class="t c-go">Continue</div><div class="d">The work holds up. Move to the next stage.</div></div>
+      </div>
+      <div class="leg">
+        <span class="mk c-pivot"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 H12 a4 4 0 0 1 0 8 H6"/><path d="M9 11 L6 14 L9 17"/></svg></span>
+        <div><div class="t c-pivot">Pivot</div><div class="d">Something is off. Reframe, re-source, or redesign.</div></div>
+      </div>
+      <div class="leg">
+        <span class="mk c-down"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor"/></svg></span>
+        <div><div class="t c-down">Put it down</div><div class="d">Pause or stop. A valid call, not a failure.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="flow">
+
+    <!-- STAGE 1 -->
+    <section class="stage s1">
+      <div class="rail"><div class="node reveal">1</div></div>
+      <div class="body">
+        <div class="card reveal">
+          <p class="stage-label">Stage 01</p>
+          <h2 class="stage-title">Frame the question</h2>
+          <p class="check-q">Do I have a unique question data can answer?</p>
+          <p class="intro">Start with a question, not a dataset. Scope it to a specific angle - "why do we not have enough housing?" can be narrowed to "why do we not have enough single-family housing for [ex: public workers] demographic in [overland park]. If someone has already answered it and it feels incomplete, consider what's missing from their findings [ex: "Findings show workers in this income bracket can't afford the housing needed for a family based on median home values"] Pivot to what else can be considered [ex: Workers can't find afford housing needed for a family within their income range, but this is due to childcare expenses in XYZ neighborhood].</p>
+
+          <h3 class="block">Checks</h3>
+          <div class="checks">
+            <div class="check"><span class="mk c-go"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M5 3 L16 10 L5 17 Z" fill="currentColor"/></svg></span><span class="verb c-go">Continue</span><span class="txt">The question is <b>regional</b>, MARC's involvement changes something, and data can plausibly answer it.</span></div>
+            <div class="check"><span class="mk c-pivot"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 H12 a4 4 0 0 1 0 8 H6"/><path d="M9 11 L6 14 L9 17"/></svg></span><span class="verb c-pivot">Pivot</span><span class="txt">It has been asked before. Reframe it. "Why are renters struggling" becomes "<b>who actually rents in this region, and where is the squeeze.</b>"</span></div>
+            <div class="check"><span class="mk c-down"><svg width="18" height="18" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor"/></svg></span><span class="verb c-down">Put it down</span><span class="txt">It is not regional and there is no value add (requests from the public, other programs, constituents)  to warrant resources towards it.</span></div>
+          </div>
+
+          <h3 class="block">Tools &amp; resources</h3>
+          <ul class="clean">
+            <li><b>BIG IDEA worksheet.</b> Forces a single-sentence point of view, names the one person you are talking to, and spells out what is at stake. </li>
+            <li><b>Systems Thinking worksheet.</b> four lenses are considered (system, connection, leverage, time) to find the leverage point of a research question: the thing that is underexplored or that stakeholders keep asking about.</li>
+            <li><b>MARC scope check.</b> Is it regional? Does MARC make a difference? Do stakeholders want the involvement? Are there resources?</li>
+          </ul>
+
+          <div class="callout ex">
+            <span class="tag">from previous/current work</span>
+            <div>The <b>Profile of a Renter</b> narrative started from age-cohort missing-household data and became a four-part arc about who actually rents in the region. The <b>LIHTC preservation</b> question, "how many affordable units could roll off," scoped straight to a number people could act on.</div>
+          </div>
+          <div class="callout tp">
+            <span class="tag">Templates to use</span>
+            <div><span class="file">bigidea.pdf</span> and <span class="file">Data_Journalism_Systems_Thinking_Worksheet.docx</span>. Fill the BIG IDEA worksheet first, then run the four lenses to pressure-test that the question is worth MARC's time.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 2 -->
+    <section class="stage s2">
+      <div class="rail"><div class="node reveal">2</div></div>
+      <div class="body">
+        <div class="card reveal">
+          <p class="stage-label">Stage 02</p>
+          <h2 class="stage-title">Source &amp; process the data</h2>
+          <p class="check-q">Do the data exist, and can I get them into usable shape?</p>
+          <p class="intro">Leverage data that already exists before pursuing new information. If a public source fits the question, use it. If not, build the dataset if needed and brings value. Budget time for this.</p>
+
+          <h3 class="block">Checks</h3>
+          <div class="checks">
+            <div class="check"><span class="mk c-go"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M5 3 L16 10 L5 17 Z" fill="currentColor"/></svg></span><span class="verb c-go">Continue</span><span class="txt">A credible source exists, or you can assemble one you can stand behind.</span></div>
+            <div class="check"><span class="mk c-pivot"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 H12 a4 4 0 0 1 0 8 H6"/><path d="M9 11 L6 14 L9 17"/></svg></span><span class="verb c-pivot">Pivot</span><span class="txt">The source does not fit the question. Swap sources, or adjust the question to the data you can defend.</span></div>
+            <div class="check"><span class="mk c-down"><svg width="18" height="18" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor"/></svg></span><span class="verb c-down">Put it down</span><span class="txt">The data do not exist, are not usable, or it is not ethical to use them.</span></div>
+          </div>
+
+          <h3 class="block">Where to look, in order</h3>
+          <ul class="clean">
+            <li><b>MARC data catalog first.</b> The <span class="mono">MARC_CENSUS</span> SDE tables (ACS, CHAS, decennial) and the enterprise geodatabases. Start in house.</li>
+            <li><b>mySidewalk.</b> Seek for quick exploration and pre-built indicators when you need a fast read on whether something is there.</li>
+            <li><b>Public sources.</b> Census API, IPUMS PUMS microdata, NHPD and LIHTC, HUD CHAS, DOE LEAD. Market data from CoStar, Apartments.com and Dodge. State agencies like KHRC and MHDC.</li>
+            <li><b>Pull and shape.</b> Python and pandas for API sourcing and cleaning. ArcGIS Pro and Portal for anything spatial.</li>
+            <li><b>Hosting.</b> The <span class="mono">X drive</span> for data. The <span class="mono">CHIEFS</span> server for enterprise GIS (<span class="mono">MARC_PUB</span>).</li>
+          </ul>
+
+          <div class="callout ex">
+            <span class="tag">from previous/current work</span>
+            <div>The <b>streetcar corridor analysis</b> merged CoStar, Apartments.com and Dodge into one 194-record geodataset. The <b>BikeRepairStands</b> pipeline moved from a file GDB to the MARC_PUB enterprise GDB on CHIEFS with a truncate-and-append. The <b>underproduction pipeline</b> pulled ACS 1-year estimates and PUMS microdata against a 2000 decennial baseline.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 3 -->
+    <section class="stage s3">
+      <div class="rail"><div class="node reveal">3</div></div>
+      <div class="body">
+        <div class="card reveal">
+          <p class="stage-label">Stage 03</p>
+          <h2 class="stage-title">Validate the methodology</h2>
+          <p class="check-q">Is the method vetted by other program experts, documented and reproducible?</p>
+          <p class="intro">This is the stage that states assumptions with defensible rationale. If the methodology is handed off to someone with no background on it, they should be able to recreate it.</p>
+
+          <h3 class="block">What is a strong methodology</h3>
+          <ol class="checks">
+            <li><b>Borrow a published framework instead of inventing one.</b> The underproduction work replicates the UpForGrowth headship-rate model, so the method arrives already peer-reviewed.</li>
+            <li><b>Set a defensible baseline.</b> 2000 decennial headship rates by age cohort, 15 to 54 as primary and 55 to 64 as the MARC extension.</li>
+            <li><b>Define the universe out loud.</b> Know exactly what ACS counts versus what PUMS counts, and where CHAS universes differ. Disaggrecheck tenure on purpose, not by accident.</li>
+            <li><b>Debug for assumptions and calculations.</b> Real ones caught in underproduction methodology: group-quarters inflation from IPUMS, the <span class="mono">actualUnitsAvailable</span> formula that cancelled out, PUMA vintage boundary mismatches, AMI bucket thresholds, and the ArcPy script's hardcoded year list and wrong assisted-units field.</li>
+            <li><b>Cross-validate.</b> Check ACS against PUMS on the same tenure-by-age cut before you trust either one.</li>
+            <li><b>Get it reviewed.</b> Refer to the original methodologist. Walk them through the assumptions, not just the output.</li>
+            <li><b>Log the gaps.</b> Be explicit in what you do not have yet, like the KHRC and MHDC QC waiver data for LIHTC analysis when viewing the numbers.</li>
+          </ol>
+
+          <h3 class="block">Checks</h3>
+          <div class="checks">
+            <div class="check"><span class="mk c-go"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M5 3 L16 10 L5 17 Z" fill="currentColor"/></svg></span><span class="verb c-go">Continue</span><span class="txt">The method survives Frank's review and the cross-checks line up.</span></div>
+            <div class="check"><span class="mk c-pivot"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 H12 a4 4 0 0 1 0 8 H6"/><path d="M9 11 L6 14 L9 17"/></svg></span><span class="verb c-pivot">Pivot</span><span class="txt">An assumption breaks. Revise the model or redefine the universe, the way correcting the AMI buckets brought the LIHTC roll-off down to a defensible <b>13,257 units</b>.</span></div>
+            <div class="check"><span class="mk c-down"><svg width="18" height="18" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor"/></svg></span><span class="verb c-down">Put it down</span><span class="txt">Data gaps make the result unreliable. Pause until the gap closes rather than publish a number you cannot stand behind.</span></div>
+          </div>
+
+          <h3 class="block">Insert: a methodology log to keep alongside the notebook</h3>
+          <table class="logtable">
+            <thead><tr><th>Decision</th><th>Assumption / why</th><th>Source</th><th>Date</th><th>Reviewed</th></tr></thead>
+            <tbody>
+              <tr><td class="eg">Use 2000 headship rates as baseline</td><td>Pre-distortion benchmark for cohort demand</td><td>Decennial 2000</td><td>mm/dd</td><td>Frank</td></tr>
+              <tr><td class="eg">Drop group-quarters pop from PUMS</td><td>IPUMS GQ flag inflates household counts</td><td>IPUMS PUMS</td><td>mm/dd</td><td>Frank</td></tr>
+              <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 4 -->
+    <section class="stage s4">
+      <div class="rail"><div class="node reveal">4</div></div>
+      <div class="body">
+        <div class="card reveal">
+          <p class="stage-label">Stage 04</p>
+          <h2 class="stage-title">Visualize</h2>
+          <p class="check-q">What is the simplest visual that makes the one insight land in five seconds?</p>
+          <p class="intro">Pick the tool by where the chart is going, not by what is new or cool. Exploring for yourself is a different job than explaining to a reader.</p>
+
+          <h3 class="block">Tool, and when to use it</h3>
+          <div class="tooluse">
+            <div class="tu"><div class="nm">Excel</div><div class="us">Fast exploratory charts and sanity checks. A quick bar or line you screenshot for internal review. Not for publishing.</div></div>
+            <div class="tu"><div class="nm">Python</div><div class="us">Exploratory analysis and anything you will repeat across years or geographies. Small multiples, programmatic, reproducible.</div></div>
+            <div class="tu"><div class="nm">Everviz</div><div class="us">WYSIWYG, MARC-branded, embeddable. This is the publish-ready chart for the blog and web (mySidewalk Chart does the same job).</div></div>
+            <div class="tu"><div class="nm">ArcGIS Pro</div><div class="us">Anything spatial. Choropleths, point maps, corridor overlays, and map-heavy stories through StoryMaps.</div></div>
+          </div>
+          <div class="shorthand"><b>Shorthand:</b> exploratory goes to Excel or Python. Explanatory and published goes to Everviz for charts, ArcGIS for maps.</div>
+
+          <h3 class="block">Checks</h3>
+          <div class="checks">
+            <div class="check"><span class="mk c-go"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M5 3 L16 10 L5 17 Z" fill="currentColor"/></svg></span><span class="verb c-go">Continue</span><span class="txt">The visual passes the five-second test. A reader gets the point before they read the caption.</span></div>
+            <div class="check"><span class="mk c-pivot"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 H12 a4 4 0 0 1 0 8 H6"/><path d="M9 11 L6 14 L9 17"/></svg></span><span class="verb c-pivot">Pivot</span><span class="txt">Change the chart type. The guide's before and after: a crowded pie becomes a sorted bar with direct labels.</span></div>
+            <div class="check"><span class="mk c-down"><svg width="18" height="18" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor"/></svg></span><span class="verb c-down">Put it down</span><span class="txt">Prose says it better. A visual that adds complexity without insight is one you can cut.</span></div>
+          </div>
+
+          <div class="callout tp">
+            <span class="tag">Guide to lean on</span>
+            <div><span class="file">Data-Visualization-Guide.pdf</span> for the chart-type picker by data type, the MARC color palette with hex values, type and accessibility rules, the five-second test, exploratory versus explanatory, and the pie-versus-bar before and after.</div>
+          </div>
+          <div class="callout ex">
+            <span class="tag">from previous/current work</span>
+            <div>The <b>choropleth of high-burden, pre-1980 tracts</b> for the modular data story. <b>Renter surplus by age band in the underproduction analysis</b> as direct-labeled bars in the renter profile.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 5 -->
+    <section class="stage s5">
+      <div class="rail"><div class="node reveal">5</div></div>
+      <div class="body">
+        <div class="card reveal">
+          <p class="stage-label">Stage 05</p>
+          <h2 class="stage-title">Narrate &amp; publish</h2>
+          <p class="check-q">Does the story move from data to implication, and is it ready for the room?</p>
+          <p class="intro">The number is not the story. The story is what the number means for a decision someone in the region has to make.</p>
+
+          <h3 class="block">The blog template</h3>
+          <ul class="clean">
+            <li><b>Framing the issue.</b> Civic, factual, why the reader should care.</li>
+            <li><b>Why it matters.</b> Data to implication, tied to regional goals and planning decisions.</li>
+            <li><b>What the data shows.</b> The findings, factually, with one to three visuals.</li>
+            <li><b>Learn more and next steps.</b> Tools, dashboards, related stories, a forward-looking hook.</li>
+            <li><b>Methodology, as needed.</b> The short version of Stage 03.</li>
+          </ul>
+
+          <h3 class="block">The ideal cadence</h3>
+          <ul class="clean">
+            <li>Department/program specialists scopes the question in week 1. You gather and build through weeks 1 to 2. You and Department/program specialists draft through weeks 3 to 4. You make visuals in week 5. Catherine and Department/program specialists review in week 6. Catherine publishes in week 7.</li>
+          </ul>
+
+          <h3 class="block">Before it ships: the Reflect &amp; Iterate check</h3>
+          <ul class="clean">
+            <li>Did this illuminate the system, or just describe symptoms?</li>
+            <li>Did it support MARC's role: convening, informing, influencing?</li>
+            <li>Who needs to hear this, and are they actually in the audience?</li>
+          </ul>
+
+          <h3 class="block">Checks</h3>
+          <div class="checks">
+            <div class="check"><span class="mk c-go"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M5 3 L16 10 L5 17 Z" fill="currentColor"/></svg></span><span class="verb c-go">Continue</span><span class="txt">It answers the question and serves MARC's role. Publish it.</span></div>
+            <div class="check"><span class="mk c-pivot"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6 H12 a4 4 0 0 1 0 8 H6"/><path d="M9 11 L6 14 L9 17"/></svg></span><span class="verb c-pivot">Pivot</span><span class="txt">The storyboard falls flat. Same data, new frame. A flat welcome packet became postcards from Mars.</span></div>
+            <div class="check"><span class="mk c-down"><svg width="18" height="18" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="2" fill="currentColor"/></svg></span><span class="verb c-down">Put it down</span><span class="txt">It missed its window, or it is not yours to tell. Pausing is a real option here too.</span></div>
+          </div>
+
+          <div class="callout tp">
+            <span class="tag">Templates to use</span>
+            <div><span class="file">Template_Blog.docx</span> for structure and the workflow cadence, and the Reflect &amp; Iterate section of <span class="file">Data_Journalism_Systems_Thinking_Worksheet.docx</span> as the final gut check.</div>
+          </div>
+          <div class="callout ex">
+            <span class="tag">from previous/current work</span>
+            <div>The <b>Housing Policy Innovation Series</b>: Portfolio Homes and pre-approved plans, the streetcar permit analysis, the affordability data hub update.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <section class="loop reveal">
+    <h2>Iterative, not linear</h2>
+    <p>The Pudding's point holds here: there are more honest paths to <span class="hot">put it down</span> than to publish, and that is fine. Pivoting and pausing are not failure, they are how the published work gets good.</p>
+    <p>Any stage can send you back a step. A broken assumption in Stage 03 can resend you to Stage 02. A flat storyboard in Stage 05 can resend you to Stage 01. <b>When that happens, write the decision down.</b> That log is where the transparency lives, the answer to "why did we make this call" long after the conversation is over.</p>
+    <p class="credit">Structure adapted from The Pudding, "Continue, Pivot, or Put It Down" (<a href="https://pudding.cool/process/pivot-continue-down/">pudding.cool</a>). Built around MARC sources, tools, and your housing work.</p>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+    },{threshold:.12, rootMargin:"0px 0px -40px 0px"});
+    els.forEach(function(e){io.observe(e);});
+  })();
+</script>
+</body>
+</html>
